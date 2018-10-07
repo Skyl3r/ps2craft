@@ -29,5 +29,7 @@
 
 #include "texture_setup.c"
 #include "mesh_data.c"
+#include "draw_help.c"
+#include "map_help.c"
 
 #endif

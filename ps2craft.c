@@ -11,7 +11,6 @@
 
 #include "global_header.h"
 
-extern unsigned char textures[];
 
 // The buffers to be used.
 framebuffer_t frame;
@@ -76,6 +75,24 @@ void init_drawing_environment(framebuffer_t *frame, zbuffer_t *z)
 
 int render(framebuffer_t *frame, zbuffer_t *z)
 {
+	int *map[8][8][10];
+	generate_map_perlin_noise(map, 5, 8, 8, 5);
+	int _x, _y, _z;
+	for(_x = 0; _x < 8; _x++) {
+		for(_y = 0; _y < 8; _y++) {
+			for(_z = 0; _z < 8; _z++) {
+				printf("\n\nMap value: %d\n\n", map[_x][_y][_z]);
+				if(map[_x][_y][_z] == 1) {
+					primitives_generate_cube(vertices, colours, coordinates, points, &vertex_count, &points_count, //references
+						2, 2, 2, //size
+						_x * 8, _y * 8, _z * 8
+						);
+						printf("\n\nArray Size: %d\n\n", vertex_count);
+				}
+			}
+		}
+	}
+	
 
 	int i;
 	int context = 0;
@@ -101,8 +118,8 @@ int render(framebuffer_t *frame, zbuffer_t *z)
 	texel_t *st;
 	texwrap_t *texwrap;
 
-	packets[0] = packet_init(100,PACKET_NORMAL);
-	packets[1] = packet_init(100,PACKET_NORMAL);
+	packets[0] = packet_init(40000,PACKET_NORMAL);
+	packets[1] = packet_init(40000,PACKET_NORMAL);
 
 	// Define the triangle primitive we want to use.
 	prim.type = PRIM_TRIANGLE;
@@ -221,9 +238,7 @@ int render(framebuffer_t *frame, zbuffer_t *z)
 		// Check if we're in middle of a qword or not.
 		if ((u32)dw % 16)
 		{
-
 			*dw++ = 0;
-
 		}
 
 		// Only 3 registers rgbaq/st/xyz were used (standard STQ reglist)
